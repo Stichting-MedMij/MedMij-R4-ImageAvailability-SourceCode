@@ -1,0 +1,93 @@
+<div id="bbs-viewer">
+	<div class="medmij-dicom-viewer" data-medmij-kos-id="sample" data-medmij-img-endpoint="testUrl">
+		<div class="study">
+			<div class="nav">
+				<button class="close"></button>
+			</div>
+			<div class="contents">
+				<div class="series-list">
+					<button class="series" data-medmij-series-id="2.1.2.1" data-medmij-series-len="1">
+						<h3 class="h3">viewerSeriesInfo</h3>
+						<template class="instance-info" data-medmij-instance-id="3.1.2.1"></template>
+					</button>
+				</div>
+			</div>
+			<div class="image-controls">
+				<div class="zoom"></div>
+				<div class="info">
+					<div class="hcp-name">Test</div>
+					<div class="date">2025-09-01</div>
+				</div>
+				<div class="download"></div>
+			</div>
+		</div>
+		<div class="series hidden">
+			<div class="nav">
+				<button class="back"></button>
+				<div class="gallery-controls">
+					<button class="prev"></button>
+					<div class="index"></div>
+					<button class="next"></button>
+				</div>
+				<button class="close"></button>
+			</div>
+			<div class="contents">
+				<div class="multiframe-loader hidden">
+					<span class="static-text">viewerMultiFrameLoader</span>
+					<br>
+					<span class="progress"></span>
+				</div>
+				<img class="hidden">
+				<iframe class="hidden"></iframe>
+			</div>
+			<div class="image-controls">
+				<div class="zoom">
+					<button class="minus"></button>
+					<input type="range" class="slider" min="1" max="100" step="1" value="1">
+					<button class="plus"></button>
+				</div>
+				<div class="info">
+					<div class="hcp-name">Test</div>
+					<div class="date">2025-09-01</div>
+				</div>
+				<div class="download">
+					<button class="image">viewerDownloadButton</button>
+					<button class="dicom">viewerDownloadDicomButton</button>
+				</div>
+			</div>
+			<div id="dicom-confirm-overlay" class="overlay beeld-confirm hidden">
+				<div class="overlay-content">
+					<div class="overlay-inner">
+						<div class="group">viewerDownloadDicomOverlayContent</div>
+						<button type="button" class="primary">viewerDownloadDicomOverlayPosButton</button>
+						<button type="button" class="secondary">viewerDownloadDicomOverlayNegButton</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="not-found-error" class="overlay beeld-confirm hidden">
+		<div class="overlay-content">
+			<div class="overlay-inner">
+				<div class="group">viewerNotFoundErrorOverlayContent</div>
+				<button type="button" class="primary" onclick="document.getElementById('not-found-error').classList.toggle('hidden');">viewerNotFoundErrorOverlayButton</button>
+			</div>
+		</div>
+	</div>
+	<div id="generic-error" class="overlay beeld-confirm hidden">
+		<div class="overlay-content">
+			<div class="overlay-inner">
+				<div class="group">viewerGenericErrorOverlayContent</div>
+				<button type="button" class="primary" onclick="document.getElementById('generic-error').classList.toggle('hidden');">viewerGenericErrorOverlayButton</button>
+			</div>
+		</div>
+	</div>
+	<div id="token-error" class="overlay beeld-confirm hidden">
+		<div class="overlay-content">
+			<div class="overlay-inner">
+				<div class="group">viewerTokenErrorOverlayContent</div>
+				<button type="button" class="primary" onclick="document.getElementById('token-error').classList.toggle('hidden');">viewerTokenErrorOverlayButton</button>
+			</div>
+		</div>
+	</div>
+</div>

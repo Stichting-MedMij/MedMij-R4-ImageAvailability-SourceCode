@@ -1,0 +1,35 @@
+name: Generate SBOM for Gezondheidsmeter/java
+on:
+  push:
+    paths:
+      - 'Gezondheidsmeter/java/**'
+  workflow_dispatch:
+
+jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Gezondheidsmeter/java
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Generate SBOM with CycloneDX
+        run: |
+          mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-Gezondheidsmeter-java
+          path: Gezondheidsmeter/java/target/bom.xml
+          if-no-files-found: error

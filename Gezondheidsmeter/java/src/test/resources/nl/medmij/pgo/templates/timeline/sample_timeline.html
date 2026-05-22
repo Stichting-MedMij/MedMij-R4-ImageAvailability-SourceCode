@@ -1,0 +1,105 @@
+<div class="medmij-timeline" id="medmij-timeline">
+	<div id="disclaimer" class="overlay beeld-confirm">
+		<div class="overlay-content">
+			<div class="overlay-inner">
+				<div class="group">timelineDisclaimerOverlayContent</div>
+				<button type="button" class="primary" onclick="document.getElementById('disclaimer').classList.toggle('hidden');">timelineDisclaimerOverlayButton</button>
+			</div>
+		</div>
+	</div>
+	<div class="timeline-filter">
+		<div class="hcp">
+			<select name="provider" id="medmij-timeline-provider">
+				<option value="all">timelineFilterProvidersAll</option>
+				<option value="a">a</option>
+				<option value="b">b</option>
+			</select>
+		</div>
+		<div class="from">
+			<label for="medmij-timeline-from">timelineFilterFromDate</label>
+			<input type="date" name="from" id="medmij-timeline-from"/>
+		</div>
+		<div class="to">
+			<label for="medmij-timeline-to">timelineFilterToDate</label>
+			<input type="date" name="to" id="medmij-timeline-to"/>
+		</div>
+		<div class="order">
+			<select name="order" id="medmij-timeline-order">
+				<option value="order-desc">timelineFilterSortDescending</option>
+				<option value="order-asc">timelineFilterSortAscending</option>
+			</select>
+		</div>
+		<div class="search">
+			<label for="medmij-timeline-search">timelineFilterSearch</label>
+			<input type="text" name="searchTitle" id="medmij-timeline-search" placeholder="timelineFilterSearchPlaceholder"/>
+		</div>
+	</div>
+	<div class="timeline-data">
+		<div class="timeline-year" data-timeline-year-value="2024">
+			<div class="timeline-month" data-timeline-month-value="12">
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-12-2024"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+			</div>
+			<div class="timeline-month" data-timeline-month-value="11">
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-11-2024"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+			</div>
+			<div class="timeline-month" data-timeline-month-value="02">
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-02-2024"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+			</div>
+		</div>
+		<div class="timeline-year" data-timeline-year-value="2021">
+			<div class="timeline-month" data-timeline-month-value="02">
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-02-2021"></div>
+					<div class="timeline-entry" data-timeline-hcp="b"></div>
+				</div>
+			</div>
+			<div class="timeline-month" data-timeline-month-value="01">
+				<div class="timeline-day" data-timeline-day-value="11">
+					<div class="timeline-marker" data-timeline-marker-date="11-01-2021"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+				<div class="timeline-day" data-timeline-day-value="02">
+					<div class="timeline-marker" data-timeline-marker-date="02-01-2021"></div>
+					<div class="timeline-entry" data-timeline-hcp="b"></div>
+				</div>
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-01-2021"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+			</div>
+		</div>
+		<div class="timeline-year" data-timeline-year-value="2020">
+			<div class="timeline-month" data-timeline-month-value="07">
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-07-2020"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+			</div>
+			<div class="timeline-month" data-timeline-month-value="06">
+				<div class="timeline-day" data-timeline-day-value="02">
+					<div class="timeline-marker" data-timeline-marker-date="02-06-2020"></div>
+					<div class="timeline-entry" data-timeline-hcp="a"></div>
+				</div>
+				<div class="timeline-day" data-timeline-day-value="01">
+					<div class="timeline-marker" data-timeline-marker-date="01-06-2020"></div>
+					<div class="timeline-entry" data-timeline-hcp="a">2</div>
+					<div class="timeline-entry" data-timeline-hcp="a">1</div>
+					<div class="timeline-entry" data-timeline-hcp="a">1</div>
+					<div class="timeline-entry" data-timeline-hcp="a">3</div>
+				</div>
+			</div>
+		</div>
+		<div class="timeline-entry"></div>
+		<div class="timeline-entry"></div>
+	</div>
+</div>
