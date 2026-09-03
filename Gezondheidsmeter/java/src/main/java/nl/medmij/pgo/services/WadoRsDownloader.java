@@ -16,6 +16,10 @@ import java.net.URI;
 import java.util.Base64;
 import java.util.UUID;
 
+/**
+ * Abstract base class to be implemented by clients of this library to perform the actual download
+ * of the DICOM objects.
+ */
 public abstract class WadoRsDownloader {
 	public static final class Response {
 		public final String contentType;
@@ -70,7 +74,28 @@ public abstract class WadoRsDownloader {
 	private Response doDownloadEncapsulatedDocument(String bearer, UUID xCorrelatioId, Instance instance) throws IOException {
 		Response resp = doDownloadMetadata(bearer, xCorrelatioId, instance);
 		Metadata metadata = mapResponseToMetadata(resp);
-		return new Response(metadata.getMimeType(), resp.status, new ByteArrayInputStream(Base64.getDecoder().decode(metadata.getData())));
+		if (metadata.hasData()) {
+			return new Response(metadata.getMimeType(), resp.status, new ByteArrayInputStream(Base64.getDecoder().decode(metadata.getData())));
+		}
+		if (metadata.hasBulkDataUri()) {
+			return doDownloadRenderedDocument(bearer, xCorrelatioId, instance, metadata);
+		}
+		return new Response(metadata.getMimeType(), 204 /* no content */, new ByteArrayInputStream(new byte[0]));
+	}
+
+	/**
+	 * Downloads an encapsulated document (e.g. a PDF) via the WADO-RS {@code /rendered} sub-resource on the
+	 * instance, rather than following {@code BulkDataURI} directly. The instance-level {@code /rendered} sub-resource
+	 * is the more broadly supported route and, per the DICOM standard, returns the document's native representation
+	 * (e.g. {@code application/pdf}) by default for this SOP class. Here, the presence of {@code BulkDataURI} in
+	 * the metadata is used only as the signal that the document isn't inlined and must be retrieved separately;
+	 * the URI value itself is not used.
+	 */
+	private Response doDownloadRenderedDocument(String bearer, UUID xCorrelatioId, Instance instance, Metadata metadata) throws IOException {
+		URI url = WadoRsBuilder.fromInstance(instance).endpoint(WadoRsBuilder.Endpoint.RENDERED).generateInstancesUrl();
+		String accept = metadata.getMimeType().isEmpty() ? "application/octet-stream" : metadata.getMimeType();
+		Response resp = doRequestAndHandleInvalidStatus(url, bearer, accept, xCorrelatioId);
+		return new Response(metadata.getMimeType(), resp.status, resp.contents);
 	}
 
 	private Response doDownloadMultiFrame(String bearer, UUID xCorrelatioId, Instance instance) throws IOException {
@@ -83,13 +108,10 @@ public abstract class WadoRsDownloader {
 	private Response doDownloadMetadata(String bearer, UUID xCorrelatioId, Instance instance) throws IOException {
 		URI url = WadoRsBuilder.fromInstance(instance).endpoint(WadoRsBuilder.Endpoint.METADATA).generateInstancesUrl();
 		String accept = "application/dicom+json";
-		return doRequest(url, bearer, accept, xCorrelatioId, UUID.randomUUID());
+		return doRequestAndHandleInvalidStatus(url, bearer, accept, xCorrelatioId);
 	}
 
 	private Metadata mapResponseToMetadata(Response resp) throws IOException {
-		if (! (resp.status >= 200 && resp.status < 300)) {
-			throw new IOException("Received error response");
-		}
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode metadataArray = mapper.readTree(resp.contents);
 		JsonNode metadataObject = metadataArray.get(0);
@@ -99,5 +121,23 @@ public abstract class WadoRsDownloader {
 		return Metadata.fromJson(metadataObject);
 	}
 
-	protected abstract Response doRequest(URI uri, String bearer, String accept, UUID xCorrelationId, UUID medmijRequestId) throws IOException;
+	private Response doRequestAndHandleInvalidStatus(URI uri, String bearer, String accept, UUID xCorrelatioId) throws IOException {
+		Response resp = doRequest(uri, bearer, accept, xCorrelatioId, UUID.randomUUID());
+		if (! (resp.status >= 200 && resp.status < 300)) {
+			throw new IOException("Received non-successful status " + resp.status + " for request to " + uri);
+		}
+		return resp;
+	}
+
+	/**
+	 * This method performs the actual HTTP get request.
+	 * @param uri The URI
+	 * @param bearer the bearer token for the Authorization header. This does not include the "Bearer " prefix.
+	 * @param accept the value for the accept header.
+	 * @param xCorrelationId the correlation id for the X-Correlation-ID header.
+	 * @param requestId a unique ID that can be used to uniquely identify the request.
+	 * @return the response from the HTTP request. Always return the response, even if the status code indicates a problem.
+	 * @throws IOException if a problem occurred with network traffic. Do not throw an exception if the status code indicates a problem!
+	 */
+	protected abstract Response doRequest(URI uri, String bearer, String accept, UUID xCorrelationId, UUID requestId) throws IOException;
 }
