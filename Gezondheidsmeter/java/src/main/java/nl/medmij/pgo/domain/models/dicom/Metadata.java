@@ -12,12 +12,14 @@ public class Metadata {
 	private final String encoding;
 	private final String mimeType;
 	private final String data;
+	private final String bulkDataUri;
 	private final int numberOfFrames;
 
-	private Metadata(String encoding, String mimeType, String data, int numberOfFrames) {
+	private Metadata(String encoding, String mimeType, String data, String bulkDataUri, int numberOfFrames) {
 		this.encoding = encoding;
 		this.mimeType = mimeType;
-		this.data = data;
+		this.data = data == null ? "" : data;
+		this.bulkDataUri = bulkDataUri == null ? "" : bulkDataUri;
 		this.numberOfFrames = numberOfFrames;
 	}
 
@@ -27,17 +29,11 @@ public class Metadata {
 	public static Metadata fromJson(JsonNode jsonNode) {
 		String encoding = JsonUtil.getFirstValueInterpreted(JsonNode::textValue, jsonNode.get(DicomCodes.SPECIFIC_CHARACTER_SET), "ISO_IR 100");
 		String mimeType = JsonUtil.getFirstValueInterpreted(JsonNode::textValue, jsonNode.get(DicomCodes.MIME_TYPE_OF_ENCPASULATED_DOCUMENT), "");
-		String data = "";
-		try {
-			data = jsonNode
-					.get(DicomCodes.ENCPASULATED_DOCUMENT)
-					.get("InlineBinary")
-					.textValue();
-		} catch (NullPointerException ignored) {
-			// Ignored, just use the empty string
-		}
+		JsonNode encapsulatedDocument = jsonNode.path(DicomCodes.ENCPASULATED_DOCUMENT);
+		String data = encapsulatedDocument.path("InlineBinary").textValue();
+		String bulkDataUri = encapsulatedDocument.path("BulkDataURI").textValue();
 		int numberOfFrames = Integer.parseInt(JsonUtil.getFirstValueInterpreted(JsonNode::textValue, jsonNode.get(DicomCodes.NUMBER_OF_FRAMES), "0"));
-		return new Metadata(encoding, mimeType, data, numberOfFrames);
+		return new Metadata(encoding, mimeType, data, bulkDataUri, numberOfFrames);
 	}
 
 	public String getEncoding() {
@@ -48,8 +44,20 @@ public class Metadata {
 		return mimeType;
 	}
 
+	public boolean hasData() {
+		return ! data.isEmpty();
+	}
+
 	public String getData() {
 		return data;
+	}
+
+	public boolean hasBulkDataUri() {
+		return ! bulkDataUri.isEmpty();
+	}
+
+	public String getBulkDataUri() {
+		return bulkDataUri;
 	}
 
 	public int getNumberOfFrames() {

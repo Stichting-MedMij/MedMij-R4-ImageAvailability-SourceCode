@@ -1,0 +1,10 @@
+{
+  "00080005": {"vr": "CS", "Value": ["ISO_IR 192"]},
+  "00420012": {"vr": "LO", "Value": ["application/pdf"]},
+  "00280008": {"vr": "US", "Value": ["3"]},
+  "00420011": {
+    "vr": "OB",
+    "InlineBinary": "dGVzdC1kYXRh",
+    "BulkDataURI": "https://example.com/studies/1/series/2/instances/3/bulkdata/7FE00010"
+  }
+}

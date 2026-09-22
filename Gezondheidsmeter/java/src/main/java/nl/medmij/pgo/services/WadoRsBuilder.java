@@ -12,7 +12,7 @@ import java.util.Objects;
 
 /**
  * Builder class to generate the <a href="https://www.dicomstandard.org/using/dicomweb/retrieve-wado-rs-and-wado-uri">
- * WADO-RS</a> urls. The {@code "bulkdata" and frames} endpoints are not included, because currently there is no
+ * WADO-RS</a> URLs. The {@code "bulkdata"} endpoints are not included, because currently there is no
  * usecase for them. Note that not all of these might be supported by a DVA
  */
 public class WadoRsBuilder {
@@ -54,8 +54,7 @@ public class WadoRsBuilder {
 		}
 		String[] components = series.getRetrieveUrl().split("/studies/");
 		URI base = URI.create(components[0]);
-		WadoRsBuilder builder = new WadoRsBuilder(base).series(series);
-		return builder;
+		return new WadoRsBuilder(base).series(series);
 	}
 
 	/**

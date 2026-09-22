@@ -148,9 +148,24 @@ public class WadoRsBuilderTest extends DicomTest {
 		assertEquals("www.example.com/studies/1/series/2", builder.generateSeriesUrl().toString());
 		assertEquals("www.example.com/studies/1/series/2/instances/3", builder.generateInstancesUrl().toString());
 
+		try {
+			builder.generateFramesUrl();
+			// Should throw error, because frame number is not defined
+			fail();
+		} catch (IllegalArgumentException e) {
+			// This is expected
+		}
+
+		builder.frameNumber("4");
+		assertEquals("www.example.com/studies/1", builder.generateStudyUrl().toString());
+		assertEquals("www.example.com/studies/1/series/2", builder.generateSeriesUrl().toString());
+		assertEquals("www.example.com/studies/1/series/2/instances/3", builder.generateInstancesUrl().toString());
+		assertEquals("www.example.com/studies/1/series/2/instances/3/frames/4", builder.generateFramesUrl().toString());
+
 		builder.endpoint(WadoRsBuilder.Endpoint.RENDERED);
 		assertEquals("www.example.com/studies/1/rendered", builder.generateStudyUrl().toString());
 		assertEquals("www.example.com/studies/1/series/2/rendered", builder.generateSeriesUrl().toString());
 		assertEquals("www.example.com/studies/1/series/2/instances/3/rendered", builder.generateInstancesUrl().toString());
+		assertEquals("www.example.com/studies/1/series/2/instances/3/frames/4/rendered", builder.generateFramesUrl().toString());
 	}
 }
