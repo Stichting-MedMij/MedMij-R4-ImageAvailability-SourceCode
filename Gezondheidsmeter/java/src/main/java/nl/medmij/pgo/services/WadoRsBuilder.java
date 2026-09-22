@@ -12,7 +12,7 @@ import java.util.Objects;
 
 /**
  * Builder class to generate the <a href="https://www.dicomstandard.org/using/dicomweb/retrieve-wado-rs-and-wado-uri">
- * WADO-RS</a> URLs. The {@code "bulkdata" and frames} endpoints are not included, because currently there is no
+ * WADO-RS</a> URLs. The {@code "bulkdata"} endpoints are not included, because currently there is no
  * usecase for them. Note that not all of these might be supported by a DVA
  */
 public class WadoRsBuilder {
