@@ -10,6 +10,7 @@ import nl.medmij.pgo.domain.models.dicom.Metadata;
 import nl.medmij.pgo.domain.models.dicom.SopClass;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -19,9 +20,13 @@ import java.util.UUID;
 /**
  * Abstract base class to be implemented by clients of this library to perform the actual download
  * of the DICOM objects.
+ *
+ * <p>Make sure to close the input stream of the {@link Response#contents} field processing of the response
+ * has been done. This will ensure that underlying resources get released. This class implements
+ * the {@link AutoCloseable} interface to make it easier to close the input stream using the try-with-resources statement.
  */
 public abstract class WadoRsDownloader {
-	public static final class Response {
+	public static final class Response implements AutoCloseable, Closeable {
 		public final String contentType;
 		public final int status;
 		public final InputStream contents;
@@ -30,6 +35,11 @@ public abstract class WadoRsDownloader {
 			this.contentType = contentType;
 			this.status = status;
 			this.contents = contents;
+		}
+
+		@Override
+		public void close() throws IOException {
+			contents.close();
 		}
 	}
 
@@ -124,6 +134,8 @@ public abstract class WadoRsDownloader {
 	private Response doRequestAndHandleInvalidStatus(URI uri, String bearer, String accept, UUID xCorrelatioId) throws IOException {
 		Response resp = doRequest(uri, bearer, accept, xCorrelatioId, UUID.randomUUID());
 		if (! (resp.status >= 200 && resp.status < 300)) {
+			// Close the unused body so a pooled connection is returned to its pool
+			resp.contents.close();
 			throw new IOException("Received non-successful status " + resp.status + " for request to " + uri);
 		}
 		return resp;
